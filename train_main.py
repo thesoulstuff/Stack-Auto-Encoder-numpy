@@ -35,9 +35,13 @@ class Dense(Layer):
             self.w = weights
         self.activation = activation
     def foward_pass(self, other):
+        output = np.dot(other, self.w)
         if self.activation == 'linear':
-            output = np.dot(other, self.w)
             return output
+        elif self.activation == 'tanh':
+            return np.tanh(output)
+        elif self.activation == 'sigmoid':
+            return 1/np.exp(output)
         
 class Output(Layer):
     "maybe i could use the dense layer"
