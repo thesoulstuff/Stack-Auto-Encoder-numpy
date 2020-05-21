@@ -3,10 +3,10 @@ import numpy as np
 
 
 #TODO
-# read data
-# separate input from labels
-# one-hot enconding of labels
-# save values in csv
+# [x]read data
+# [x]separate input from labels
+# [x]one-hot enconding of labels
+# [x]save values in csv
 
 def prepare_data(path):
     #read file, pandas is the faster way
