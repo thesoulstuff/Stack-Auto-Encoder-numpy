@@ -5,14 +5,15 @@ import pandas as pd
 def sigmoid(x):
     return 1/(1+np.exp(-x))
 
-def softmax(x):
-    pass
+def glorot_uniform(fan_in, fan_out, size):
+    '''Generate tensor uniform xavier glorot for the weights'''
+    r = np.sqrt(6/(fan_in + fan_out))
+    w = abs(fan_out-fan_in)*np.random.random_sample(size) + min(fan_in, fan_out)
+    w = w*2*r
+    w = w - r
+    return w
 
-def encode(x, w):
-    pass
 
-def decode(x):
-    pass
 
 def stack_autoencoder(X, node_list, C):
     '''
@@ -24,18 +25,24 @@ def stack_autoencoder(X, node_list, C):
     Xnew = X.copy()
     input_size = Xnew.shape[1]
     samples = Xnew.shape[0]
+    weight_list = []
     
     for nodes in node_list:
         # I'm using the sigmoid function but I still believe is useless
         print(Xnew.shape)
         print(samples, nodes)
-        w = np.random.random((input_size, nodes))*2 - 1
-        w2 = np.random.random((nodes, input_size))*2 -1
+        w = glorot_uniform(input_size, nodes, (input_size, nodes))
+        w2 = glorot_uniform(nodes, input_size, (nodes, input_size))
+
         syn0 = sigmoid(Xnew.dot(w))
         syn1 = syn0.dot(w2)
-        Xnew = Xnew.dot(output_learning(syn0, C, Xnew).T)
+        newW = output_learning(syn0, C, Xnew)
+        weight_list.append(newW)
+        Xnew = Xnew.dot(newW.T)
         
         input_size = Xnew.shape[1]
+        
+    return Xnew, weight_list
 
 
 
@@ -60,7 +67,9 @@ if __name__ == '__main__':
     syn0 = X.dot(w)
     syn1 = syn0.dot(w2)
     new = output_learning(syn0, C, X)
-    stack_autoencoder(X, [100, 50], C)
+    x, _ = stack_autoencoder(X, [64, 32, 16, 8], C)
+    print(X)
+    print(x)
 
     
     
