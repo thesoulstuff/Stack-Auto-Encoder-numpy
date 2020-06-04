@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 
 
+def sigmoid(x):
+    return 1/(1+np.exp(-x))
 
 def softmax(x):
     pass
@@ -11,6 +13,31 @@ def encode(x, w):
 
 def decode(x):
     pass
+
+def stack_autoencoder(X, node_list, C):
+    '''
+    X : numpy.Array - Input data to select features
+    node_list: list - features
+
+    Return list of autoencoder weights
+    '''
+    Xnew = X.copy()
+    input_size = Xnew.shape[1]
+    samples = Xnew.shape[0]
+    
+    for nodes in node_list:
+        # I'm using the sigmoid function but I still believe is useless
+        print(Xnew.shape)
+        print(samples, nodes)
+        w = np.random.random((input_size, nodes))*2 - 1
+        w2 = np.random.random((nodes, input_size))*2 -1
+        syn0 = sigmoid(Xnew.dot(w))
+        syn1 = syn0.dot(w2)
+        Xnew = Xnew.dot(output_learning(syn0, C, Xnew).T)
+        
+        input_size = Xnew.shape[1]
+
+
 
 def output_learning(H, C, target_output):
     U = H.T.dot(H)
@@ -33,8 +60,8 @@ if __name__ == '__main__':
     syn0 = X.dot(w)
     syn1 = syn0.dot(w2)
     new = output_learning(syn0, C, X)
-    print(new.shape)
+    stack_autoencoder(X, [100, 50], C)
+
     
-    print(df_output)
     
 
